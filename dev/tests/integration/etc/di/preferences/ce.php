@@ -26,5 +26,6 @@ return [
     App\ResourceConnection\ConfigInterface::class => App\ResourceConnection\Config::class,
     MF\Lock\Backend\Database::class => TF\Lock\Backend\DummyLocker::class,
     MF\Session\SessionStartChecker::class => TF\Session\SessionStartChecker::class,
-    MF\HTTP\AsyncClientInterface::class => TF\HTTP\AsyncClientInterfaceMock::class
+    MF\HTTP\AsyncClientInterface::class => TF\HTTP\AsyncClientInterfaceMock::class,
+    MF\HTTP\LaminasClient::class => TF\HTTP\LaminasClientMock::class,
 ];

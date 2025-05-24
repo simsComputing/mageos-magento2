@@ -191,7 +191,8 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
             "region_id": 1,
             "country_id": "US",
             "street": [
-                "Green str, 67"
+                "Green str, 67",
+                ""
             ],
             "company": "CompanyName",
             "telephone": "3468676",

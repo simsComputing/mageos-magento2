@@ -296,7 +296,6 @@ EXPECTED_SQL;
         $searchCriteria = $objectManager->create(\Magento\Framework\Api\SearchCriteriaInterface::class);
         $searchCriteria->setFilterGroups([$searchCriteriaGroup]);
         $products = $productRepository->getList($searchCriteria)->getItems();
-
         /** Ensure that simple extension attributes were populated correctly */
         $this->assertEquals(
             $firstProductQty,

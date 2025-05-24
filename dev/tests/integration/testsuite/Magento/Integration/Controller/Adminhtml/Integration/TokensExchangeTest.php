@@ -8,7 +8,10 @@ declare(strict_types=1);
 namespace Magento\Integration\Controller\Adminhtml\Integration;
 
 use Magento\Framework\App\Request\Http as HttpRequest;
+use Magento\Framework\HTTP\LaminasClient;
 use Magento\Integration\Api\IntegrationServiceInterface;
+use Magento\TestFramework\ObjectManager;
+use Magento\TestFramework\Response;
 use Magento\TestFramework\TestCase\AbstractBackendController;
 
 /**
@@ -31,7 +34,7 @@ class TokensExchangeTest extends AbstractBackendController
     protected function setUp(): void
     {
         parent::setUp();
-
+        ObjectManager::getInstance()->get(LaminasClient::class)->setMock(true);
         $this->integrationService = $this->_objectManager->get(IntegrationServiceInterface::class);
     }
 
@@ -49,7 +52,8 @@ class TokensExchangeTest extends AbstractBackendController
         $this->getRequest()->setMethod(HttpRequest::METHOD_GET);
         $this->getRequest()->setParams(['id' => $integration->getId()]);
         $this->dispatch(self::URL);
-
+        /** @var Response $response */
+        $response = $this->getResponse();
         $this->assertStringContainsString(
             'Please setup or sign in into your 3rd party account to complete setup of this integration.',
             $this->getResponse()->getBody()

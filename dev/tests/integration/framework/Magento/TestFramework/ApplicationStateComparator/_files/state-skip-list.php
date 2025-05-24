@@ -338,6 +338,7 @@ return [
         Magento\Framework\Api\Search\SearchResult::class => null,
         Magento\Eav\Model\Entity\Attribute\Backend\Time\Updated\Interceptor::class => null,
         Magento\CatalogInventory\Model\Stock\Item\Interceptor::class => null,
+        Magento\CatalogInventory\Model\Stock\Item::class => null,
         Magento\Framework\View\Asset\File::class => null,
         Magento\Customer\Model\Attribute\Interceptor::class => null,
         Magento\Framework\GraphQl\Schema\SchemaGenerator::class => null,
