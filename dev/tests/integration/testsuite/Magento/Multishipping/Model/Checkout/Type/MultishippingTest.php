@@ -86,7 +86,7 @@ class MultishippingTest extends \PHPUnit\Framework\TestCase
          * - current customer is set to customer session
          */
         $secondFixtureAddressId = 2;
-        $secondFixtureAddressStreet = ['Black str, 48'];
+        $secondFixtureAddressStreet = ['Black str, 48', ''];
 
         $methodName = 'getCustomerDefault' . ucfirst($addressType) . 'Address';
         $setterMethodName = 'setDefault' . ucfirst($addressType);
@@ -144,7 +144,7 @@ class MultishippingTest extends \PHPUnit\Framework\TestCase
          * - current customer is set to customer session
          */
         $firstFixtureAddressId = 1;
-        $firstFixtureAddressStreet = ['Green str, 67'];
+        $firstFixtureAddressStreet = ['Green str, 67', ''];
         $customer = $this->customerRepository->get('customer@example.com');
         $methodName = 'setDefault' . ucfirst($addressType);
         $customer->$methodName(null);
