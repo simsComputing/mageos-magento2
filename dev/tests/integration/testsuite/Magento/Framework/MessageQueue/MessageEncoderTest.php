@@ -38,7 +38,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoDataFixture Magento/Customer/_files/customer_address.php
      */
-    public function testEncode()
+    public function testEncode(): void
     {
         /** @var \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository */
         $customerRepository = $this->objectManager->create(\Magento\Customer\Api\CustomerRepositoryInterface::class);
@@ -46,6 +46,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
         $customer = $customerRepository->getById($fixtureCustomerId);
         /** @var \Magento\Customer\Api\Data\CustomerExtensionInterface $customerExtension */
         $customerExtension = $this->objectManager->create(\Magento\Customer\Api\Data\CustomerExtension::class);
+        // @phpstan-ignore method.notFound
         $customerExtension->setTestGroupCode('Some Group Code');
         $customer->setExtensionAttributes($customerExtension);
         $encodedCustomerData = json_decode($this->encoder->encode('customer.created', $customer), true);
@@ -59,7 +60,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoDataFixture Magento/Customer/_files/customer_address.php
      */
-    public function testEncodeArrayOfEntities()
+    public function testEncodeArrayOfEntities(): void
     {
         /** @var \Magento\Customer\Api\CustomerRepositoryInterface $customerRepository */
         $customerRepository = $this->objectManager->create(\Magento\Customer\Api\CustomerRepositoryInterface::class);
@@ -67,6 +68,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
         $customer = $customerRepository->getById($fixtureCustomerId);
         /** @var \Magento\Customer\Api\Data\CustomerExtensionInterface $customerExtension */
         $customerExtension = $this->objectManager->create(\Magento\Customer\Api\Data\CustomerExtension::class);
+        // @phpstan-ignore method.notFound
         $customerExtension->setTestGroupCode('Some Group Code');
         $customer->setExtensionAttributes($customerExtension);
         $encodedCustomerData = json_decode($this->encoder->encode('customer.list.retrieved', [$customer]), true);
@@ -76,7 +78,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
         $this->assertEquals($expectedEncodedCustomerData, $encodedCustomerData[0]);
     }
 
-    public function testDecode()
+    public function testDecode(): void
     {
         $encodedMessage = $this->getCustomerDataAsJson('2015-07-22 12:43:36', '2015-07-22 12:45:36');
         /** @var \Magento\Customer\Api\Data\CustomerInterface $decodedCustomerObject */
@@ -89,6 +91,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
             \Magento\Customer\Api\Data\CustomerExtensionInterface::class,
             $decodedCustomerObject->getExtensionAttributes()
         );
+        // @phpstan-ignore method.notFound
         $this->assertEquals('Some Group Code', $decodedCustomerObject->getExtensionAttributes()->getTestGroupCode());
         $addresses = $decodedCustomerObject->getAddresses();
         $this->assertCount(1, $addresses, "Address was not decoded.");
@@ -108,7 +111,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
 
     /**
      */
-    public function testDecodeInvalidMessageFormat()
+    public function testDecodeInvalidMessageFormat(): void
     {
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Error occurred during message decoding');
@@ -118,7 +121,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
 
     /**
      */
-    public function testDecodeInvalidMessage()
+    public function testDecodeInvalidMessage(): void
     {
         $this->expectException(LocalizedException::class);
 
@@ -129,7 +132,7 @@ class MessageEncoderTest extends \PHPUnit\Framework\TestCase
 
     /**
      */
-    public function testDecodeIncorrectMessage()
+    public function testDecodeIncorrectMessage(): void
     {
         $this->expectException(\Magento\Framework\Exception\LocalizedException::class);
         $this->expectExceptionMessage('Error occurred during message decoding');

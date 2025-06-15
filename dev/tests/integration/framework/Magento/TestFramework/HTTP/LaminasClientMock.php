@@ -12,6 +12,7 @@ class LaminasClientMock extends LaminasClient
     public function send(?Request $request = null)
     {
         if ($this->mock) {
+            // @phpstan-ignore return.empty
             return;
         }
         return parent::send($request);

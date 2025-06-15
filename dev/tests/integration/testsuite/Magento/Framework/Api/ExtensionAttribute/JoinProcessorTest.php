@@ -7,11 +7,8 @@ namespace Magento\Framework\Api\ExtensionAttribute;
 
 use Magento\Framework\Api\ExtensionAttribute\Config\Converter;
 use Magento\Framework\Api\ExtensionAttribute\Config\Reader;
-use Magento\Framework\Api\ExtensionAttribute\JoinData;
-use Magento\Framework\Api\ExtensionAttribute\JoinDataInterfaceFactory;
 use Magento\Framework\Reflection\TypeProcessor;
 use Magento\Framework\App\ResourceConnection as AppResource;
-use Magento\Framework\Api\ExtensionAttributesFactory;
 
 /**
  * Class to test the JoinProcessor functionality
@@ -46,11 +43,6 @@ class JoinProcessorTest extends \PHPUnit\Framework\TestCase
     private $appResource;
 
     /**
-     * @var ExtensionAttributesFactory|\PHPUnit\Framework\MockObject\MockObject
-     */
-    private $extensionAttributesFactory;
-
-    /**
      * @var \Magento\Framework\Api\ExtensionAttribute\JoinProcessorHelper
      */
     private $joinProcessorHelper;
@@ -66,10 +58,6 @@ class JoinProcessorTest extends \PHPUnit\Framework\TestCase
             ->getMock();
         $this->typeProcessor = $this->getMockBuilder(\Magento\Framework\Reflection\TypeProcessor::class)
             ->disableOriginalConstructor()
-            ->getMock();
-        $this->extensionAttributesFactory = $this->getMockBuilder(
-            \Magento\Framework\Api\ExtensionAttributesFactory::class
-        )->disableOriginalConstructor()
             ->getMock();
 
         /** @var \Magento\Framework\ObjectManagerInterface */
@@ -98,7 +86,7 @@ class JoinProcessorTest extends \PHPUnit\Framework\TestCase
     /**
      * Test the processing of the join config for a particular type
      */
-    public function testProcess()
+    public function testProcess(): void
     {
         $this->config->expects($this->once())
             ->method('get')
@@ -141,7 +129,8 @@ class JoinProcessorTest extends \PHPUnit\Framework\TestCase
      *
      * @return array
      */
-    private function getConfig()
+    // @phpstan-ignore missingType.iterableValue
+    private function getConfig(): array
     {
         return [\Magento\Catalog\Api\Data\ProductInterface::class => [
                 'review_id' => [
@@ -196,7 +185,7 @@ class JoinProcessorTest extends \PHPUnit\Framework\TestCase
         ];
     }
 
-    public function testProcessSqlSelectVerification()
+    public function testProcessSqlSelectVerification(): void
     {
         /** @var \Magento\Framework\ObjectManagerInterface */
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -258,7 +247,7 @@ EXPECTED_SQL;
     /**
      * @magentoDataFixture Magento/Catalog/_files/products.php
      */
-    public function testGetListWithExtensionAttributesAbstractModel()
+    public function testGetListWithExtensionAttributesAbstractModel(): void
     {
         /** @var \Magento\Framework\ObjectManagerInterface */
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
@@ -299,22 +288,27 @@ EXPECTED_SQL;
         /** Ensure that simple extension attributes were populated correctly */
         $this->assertEquals(
             $firstProductQty,
+            // @phpstan-ignore method.notFound
             $products[$firstProductId]->getExtensionAttributes()->getTestStockItemQty()
         );
         $this->assertEquals(
             $secondProductQty,
+            // @phpstan-ignore method.notFound
             $products[$secondProductId]->getExtensionAttributes()->getTestStockItemQty()
         );
 
         /** Check population of complex extension attributes */
         $this->assertEquals(
             $firstProductQty,
+            // @phpstan-ignore method.notFound
             $products[$firstProductId]->getExtensionAttributes()->getTestStockItem()->getQty()
         );
+        // @phpstan-ignore method.notFound
         $this->assertNotEmpty($products[$firstProductId]->getExtensionAttributes()->getTestStockItem()->getItemId());
 
         $this->assertArrayNotHasKey(
             'extension_attribute_test_stock_item_qty_qty',
+            // @phpstan-ignore method.notFound
             $products[$firstProductId]->getData(),
             "Selected extension field should be unset after it is added to extension attributes object."
         );
@@ -324,7 +318,7 @@ EXPECTED_SQL;
      * @magentoDataFixture Magento/Customer/_files/customer.php
      * @magentoDataFixture Magento/Customer/_files/customer_group.php
      */
-    public function testGetListWithExtensionAttributesAbstractObject()
+    public function testGetListWithExtensionAttributesAbstractObject(): void
     {
         $customerId = 1;
         $customerGroupName = 'General';
@@ -344,14 +338,17 @@ EXPECTED_SQL;
         /** Ensure that simple extension attributes were populated correctly */
         $customer = $customers[0];
         $this->assertEquals($customerId, $customer->getId(), 'Precondition failed');
+        // @phpstan-ignore method.notFound
         $this->assertEquals($customerGroupName, $customer->getExtensionAttributes()->getTestGroupCode());
 
         /** Check population of complex extension attributes */
+        // @phpstan-ignore method.notFound
         $this->assertEquals($taxClassId, $customer->getExtensionAttributes()->getTestGroup()->getTaxClassId());
+        // @phpstan-ignore method.notFound
         $this->assertEquals($customerGroupName, $customer->getExtensionAttributes()->getTestGroup()->getCode());
     }
 
-    public function testGetListWithFilterBySimpleDummyAttributeWithMapping()
+    public function testGetListWithFilterBySimpleDummyAttributeWithMapping(): void
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $groupRepository = $objectManager->create(\Magento\Customer\Api\GroupRepositoryInterface::class);
@@ -377,7 +374,7 @@ EXPECTED_SQL;
         );
     }
 
-    public function testGetListWithFilterByComplexDummyAttributeWithSetterMapping()
+    public function testGetListWithFilterByComplexDummyAttributeWithSetterMapping(): void
     {
         $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
         $groupRepository = $objectManager->create(\Magento\Customer\Api\GroupRepositoryInterface::class);
@@ -408,35 +405,6 @@ EXPECTED_SQL;
         $this->assertEquals(
             $joinedExtensionAttributeValue,
             $items[0]->getExtensionAttributes()->getTestComplexDummyAttribute()->getFrontendLabel(),
-            "Extension attributes were not loaded correctly"
-        );
-    }
-
-    /**
-     * @magentoDataFixture Magento/Sales/_files/invoice.php
-     */
-    public function testGetListWithExtensionAttributesAutoGeneratedRepository()
-    {
-        $this->markTestSkipped(
-            'Invoice repository is not autogenerated anymore and does not have joined extension attributes'
-        );
-        $objectManager = \Magento\TestFramework\Helper\Bootstrap::getObjectManager();
-        $searchCriteriaBuilder = $objectManager->create(\Magento\Framework\Api\SearchCriteriaBuilder::class);
-        /** @var \Magento\Sales\Api\InvoiceRepositoryInterface $invoiceRepository */
-        $invoiceRepository = $objectManager->create(\Magento\Sales\Api\InvoiceRepositoryInterface::class);
-        $invoices = $invoiceRepository->getList($searchCriteriaBuilder->create())->getItems();
-        $this->assertCount(1, $invoices, "Invalid number of loaded invoices.");
-        $invoice = reset($invoices);
-
-        /** @var \Magento\Eav\Model\Entity\Attribute $joinedEntity */
-        $joinedEntity = $objectManager->create(\Magento\Eav\Model\Entity\Attribute::class);
-        $joinedEntity->load($invoice->getId());
-        $joinedExtensionAttributeValue = $joinedEntity->getAttributeCode();
-
-        $this->assertNotNull($invoice->getExtensionAttributes(), "Extension attributes not loaded");
-        $this->assertEquals(
-            $joinedExtensionAttributeValue,
-            $invoice->getExtensionAttributes()->getTestDummyAttribute(),
             "Extension attributes were not loaded correctly"
         );
     }

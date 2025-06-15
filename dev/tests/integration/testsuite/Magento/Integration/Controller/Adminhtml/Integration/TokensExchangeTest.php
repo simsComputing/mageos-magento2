@@ -48,7 +48,7 @@ class TokensExchangeTest extends AbstractBackendController
     public function testActivate()
     {
         $integration = $this->integrationService->findByName('Fixture Integration');
-
+        // @phpstan-ignore method.notFound
         $this->getRequest()->setMethod(HttpRequest::METHOD_GET);
         $this->getRequest()->setParams(['id' => $integration->getId()]);
         $this->dispatch(self::URL);
@@ -56,6 +56,7 @@ class TokensExchangeTest extends AbstractBackendController
         $response = $this->getResponse();
         $this->assertStringContainsString(
             'Please setup or sign in into your 3rd party account to complete setup of this integration.',
+            // @phpstan-ignore method.notFound
             $this->getResponse()->getBody()
         );
     }
