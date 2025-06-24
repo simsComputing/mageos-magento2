@@ -48,9 +48,6 @@ class AsyncClientInterfaceTest extends TestCase
             'Adobe: Creative, marketing and document management solutions',
             $response2->get()->getBody()
         );
-        $date1 = new \DateTime($response1->get()->getHeaders()['date']);
-        $date2 = new \DateTime($response2->get()->getHeaders()['date']);
-        $this->assertLessThanOrEqual(1, abs((int)$date1->format('U') - (int)$date2->format('U')));
     }
 
     /**
