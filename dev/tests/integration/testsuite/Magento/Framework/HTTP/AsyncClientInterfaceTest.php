@@ -35,17 +35,17 @@ class AsyncClientInterfaceTest extends TestCase
      */
     public function testRequest(): void
     {
-        $request = new Request('https://adobe.com', Request::METHOD_GET, [], null);
+        $request = new Request('https://mage-os.org', Request::METHOD_GET, [], null);
         $response1 = $this->client->request($request);
         $response2 = $this->client->request($request);
         $this->assertEquals(200, $response2->get()->getStatusCode());
         $this->assertEquals(200, $response1->get()->getStatusCode());
         $this->assertStringContainsString(
-            'Adobe: Creative, marketing and document management solutions',
+            'Driving Innovation &amp; Adoption of Magento',
             $response1->get()->getBody()
         );
         $this->assertStringContainsString(
-            'Adobe: Creative, marketing and document management solutions',
+            'Driving Innovation &amp; Adoption of Magento',
             $response2->get()->getBody()
         );
     }
